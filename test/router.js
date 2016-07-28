@@ -22,7 +22,7 @@ describe('Restify Router', function () {
 
   describe('Simple unnamed routes', function () {
     it('Should add simple GET route to server', function (done) {
-      var r = new Route({
+      new Route({
         path: '/hello',
         method: 'get',
         handler: function (req, res, next) {
@@ -35,7 +35,7 @@ describe('Restify Router', function () {
         .get('/hello')
         .expect(200)
         .end(function (err, res) {
-          if (err) throw err
+          if (err) done(err)
 
           res.body.should.equal('Hello World')
           done()
@@ -43,7 +43,6 @@ describe('Restify Router', function () {
     })
 
     it('Should add simple GET route with prefix to server', function (done) {
-
       var child = new Route({
         path: '/world/',
         method: 'get',
@@ -63,7 +62,7 @@ describe('Restify Router', function () {
         .get('/hello/world')
         .expect(200)
         .end(function (err, res) {
-          if (err) throw err
+          if (err) done(err)
 
           res.body.should.equal('Hello World')
           done()
@@ -86,7 +85,7 @@ describe('Restify Router', function () {
         .send({name: 'test'})
         .expect(200)
         .end(function (err, res) {
-          if (err) throw err;
+          if (err) done(err);
 
           res.body.should.equal('test')
           done()
@@ -109,7 +108,7 @@ describe('Restify Router', function () {
         .send({name: 'test'})
         .expect(200)
         .end(function (err, res) {
-          if (err) throw err
+          if (err) done(err)
           res.body.should.equal('test')
           done()
         })
@@ -129,7 +128,7 @@ describe('Restify Router', function () {
           .del('/deleteme/2')
           .expect(200)
           .end(function (err, res) {
-            if (err) throw err;
+            if (err) done(err);
             res.body.should.equal('2')
             done()
           })
@@ -152,7 +151,7 @@ describe('Restify Router', function () {
           .send({name: 'test'})
           .expect(200)
           .end(function (err, res) {
-            if (err) throw err
+            if (err) done(err)
             res.body.should.equal('test')
             done()
           })
@@ -211,7 +210,7 @@ describe('Restify Router', function () {
           .get('/hello')
           .expect(200)
           .end(function (err, res) {
-            if (err) throw err;
+            if (err) done(err);
             res.body.should.equal('Hello World')
             done()
           })
@@ -244,7 +243,7 @@ describe('Restify Router', function () {
           .expect(200)
           .end(function (err, res) {
             if (err) {
-              throw err;
+              done(err);
             }
             res.body.should.equal('2.0.0')
             done()
@@ -269,7 +268,7 @@ describe('Restify Router', function () {
         .get('/hello/world')
         .expect(200)
         .end(function (err, res) {
-          if (err) throw err
+          if (err) done(err)
           res.body.should.equal('Hello World')
           done()
         })
@@ -282,6 +281,22 @@ describe('Restify Router', function () {
       expect(data).to.be.an.instanceOf(Route)
       expect(api).to.be.an.instanceOf(Route)
       done()
+    })
+
+    it('Should run multiple handlers', function (done) {
+      const api = require('./api')
+
+      api.attach(server)
+
+      request(server)
+        .get('/api/myname/myplace')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) done(err)
+
+          expect(res.text).to.equal('mynamemyplace')
+          done()
+        })
     })
   })
 

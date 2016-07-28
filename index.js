@@ -10,7 +10,10 @@ function Route (config) {
   this.version = config.version || ''
   this.path = config.path || ''
   this.method = config.method || ''
-  this.handler = Array.isArray(config.handler) ? config.handler : [config.handler]
+  this.handler = Array.isArray(config.handler) ? config.handler : []
+
+  if (typeof config.handler === 'function')
+    this.handler.push(config.handler)
 
   if (typeof this.method !== 'string')
     throw new Error('Method must be a string')
@@ -21,9 +24,6 @@ function Route (config) {
     throw new Error('Path must be a string or regular expression')
 
   this.path = this.path.trim()
-
-  if (this.handler.length === 0)
-    throw new Error('No handler given in route')
 
   // for later
   this.attached = false
@@ -97,7 +97,7 @@ Route.prototype.attach = function (server) {
   // attempt to attach myself to server
   try {
     if (this.method.length) {
-      var data = this.handler
+      var data = this.handler.slice()
 
       data.unshift({
         path: this.path,
@@ -105,7 +105,7 @@ Route.prototype.attach = function (server) {
         name: this.name,
       })
 
-      server.log.info('Attaching [%s]%s', this.method.toUpperCase(), this.path)
+      server.log.info('Attaching %s %s', this.method.toUpperCase(), this.path)
       server[ this.method ].apply(server, data)
     }
   } catch (e) {
@@ -113,9 +113,10 @@ Route.prototype.attach = function (server) {
     throw Error('Unable to add route ' + JSON.stringify(this))
   }
 
-  // attach children
+  // attach children, merge routes & handlers
   this.routes.forEach(function (route) {
     route.path = Route.mergePaths(this.path, route.path)
+    this.handler.slice().reverse().forEach(function (x) { route.handler.unshift(x) })
     route.attach(server)
   }, this)
 }
