@@ -44,13 +44,28 @@ Route.prototype.addRoute = function (data) {
 
 /**
  * Adds an array of routes to the group
- * @param data route or group
+ * @param data route or list of them
  */
 Route.prototype.addRoutes = function (data) {
   if (Array.isArray(data))
     data.forEach(this.addRoute, this)
 
+  if (data instanceof Route)
+    this.addRoute(data)
+
   return this
+}
+
+/**
+ * Static call to adding routes
+ * @param data
+ * @returns {Route}
+ */
+Route.addRoutes = function (data) {
+  // if (typeof data === 'string')
+  //   data = require(data)
+
+  return new Route().addRoutes(data)
 }
 
 /**

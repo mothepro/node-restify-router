@@ -275,38 +275,13 @@ describe('Restify Router', function () {
         })
     })
 
-    it('Should add versioned routes', function (done) {
-      new Route({
-        path:    '/hello',
-        method:  'get',
-        version: '1.0.0',
-        handler: function (req, res, next) {
-          res.send('1.0.0')
-          next()
-        }
-      }).attach(server)
+    it('Should add external routes', function (done) {
+      const data = require('./api')
+      const api = Route.addRoutes(data)
 
-      new Route({
-        path:    '/hello',
-        method:  'get',
-        version: '2.0.0',
-        handler: function (req, res, next) {
-          res.send('2.0.0')
-          next()
-        }
-      }).attach(server)
-
-      request(server)
-          .get('/hello')
-          .set('Accept-Version', '~2')
-          .expect(200)
-          .end(function (err, res) {
-            if (err) {
-              throw err;
-            }
-            res.body.should.equal('2.0.0')
-            done()
-          })
+      expect(data).to.be.an.instanceOf(Route)
+      expect(api).to.be.an.instanceOf(Route)
+      done()
     })
   })
 
