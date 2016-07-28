@@ -1,0 +1,29 @@
+{
+  "name": "restify-routes",
+  "version": "1.0.0",
+  "description": "A clean way to organize routes for the restify router",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mothepro/node-restify-router.git"
+  },
+  "keywords": [
+    "router",
+    "route",
+    "group",
+    "restify"
+  ],
+  "author":  {
+    "name": "Maurice Prosper",
+    "email": "mothepro@live.com",
+    "url": "https://mauriceprosper.com"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mothepro/node-restify-router/issues"
+  },
+  "homepage": "https://github.com/mothepro/node-restify-router#readme"
+}
