@@ -4,8 +4,7 @@ const should = chai.should()
 const expect = chai.expect
 const request = require('supertest')
 
-const Route = require('..').Route
-const Group = require('..').Group
+const Route = require('..')
 
 describe('Restify Router', function () {
   var server
@@ -25,6 +24,7 @@ describe('Restify Router', function () {
     it('Should add simple GET route to server', function (done) {
       var r = new Route({
         path: '/hello',
+        method: 'get',
         handler: function (req, res, next) {
           res.send('Hello World')
           next()
@@ -46,11 +46,12 @@ describe('Restify Router', function () {
 
       var r = new Route({
         path: '/world/',
+        method: 'get',
         handler: function (req, res, next) {
           res.send('Hello World')
           next()
         }
-      }).addPrefix('/hello/')
+      }).setPrefix('/hello/')
         .attach(server)
 
       request(server)
@@ -202,13 +203,13 @@ describe('Restify Router', function () {
       }).attach(server)
 
       request(server)
-        .get('/hello')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) throw err;
-          res.body.should.equal('Hello World')
-          done()
-        })
+          .get('/hello')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) throw err;
+            res.body.should.equal('Hello World')
+            done()
+          })
     })
 
     it('Should add versioned routes', function (done) {
@@ -233,16 +234,74 @@ describe('Restify Router', function () {
       }).attach(server)
 
       request(server)
-        .get('/hello')
-        .set('Accept-Version', '~2')
-        .expect(200)
-        .end(function (err, res) {
-          if (err) {
-            throw err;
-          }
-          res.body.should.equal('2.0.0')
-          done()
-        })
+          .get('/hello')
+          .set('Accept-Version', '~2')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              throw err;
+            }
+            res.body.should.equal('2.0.0')
+            done()
+          })
+    })
+  })
+
+  describe('Group route definitions', function () {
+    it('Should add sub route', function (done) {
+      new Route({
+        path:    '/hello/'
+      }).addRoute(new Route({
+        path:    '/world',
+        method:  'get',
+        handler: function (req, res, next) {
+          res.send('Hello World')
+          next()
+        }
+      })).attach(server)
+
+      request(server)
+          .get('/hello/world')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) throw err
+            res.body.should.equal('Hello World')
+            done()
+          })
+    })
+
+    it('Should add versioned routes', function (done) {
+      new Route({
+        path:    '/hello',
+        method:  'get',
+        version: '1.0.0',
+        handler: function (req, res, next) {
+          res.send('1.0.0')
+          next()
+        }
+      }).attach(server)
+
+      new Route({
+        path:    '/hello',
+        method:  'get',
+        version: '2.0.0',
+        handler: function (req, res, next) {
+          res.send('2.0.0')
+          next()
+        }
+      }).attach(server)
+
+      request(server)
+          .get('/hello')
+          .set('Accept-Version', '~2')
+          .expect(200)
+          .end(function (err, res) {
+            if (err) {
+              throw err;
+            }
+            res.body.should.equal('2.0.0')
+            done()
+          })
     })
   })
 
