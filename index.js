@@ -28,16 +28,6 @@ function Route (config) {
   // for later
   this.attached = false
   this.routes = []
-  this.prefix = ''
-}
-
-/**
- * Add a prefix to a route
- * @param prefix
- */
-Route.prototype.setPrefix = function (prefix) {
-  this.prefix = prefix
-  return this
 }
 
 /**
@@ -58,7 +48,7 @@ Route.prototype.addRoute = function (data) {
  */
 Route.prototype.addRoutes = function (data) {
   if (Array.isArray(data))
-    data.forEach(this.addRoute(d), this)
+    data.forEach(this.addRoute, this)
 
   return this
 }
@@ -69,7 +59,7 @@ Route.prototype.addRoutes = function (data) {
  * @param current
  * @returns {string}
  */
-Route.mergePaths = function(prefix, current) {
+Route.mergePaths = function (prefix, current) {
   // remove trailing slash
   prefix = prefix.trim().replace(/\/+$/g, '')
 
@@ -81,7 +71,7 @@ Route.mergePaths = function(prefix, current) {
 }
 
 /**
- * Addes a route to the server
+ * Adds a route to the server
  * @param server to add route to
  */
 Route.prototype.attach = function (server) {
@@ -89,14 +79,9 @@ Route.prototype.attach = function (server) {
   if (this.attached) return
   this.attached = true
 
+  // attempt to attach myself to server
   try {
-    var me = this
-
-    if (this.prefix)
-      this.path = Route.mergePaths(this.prefix, this.path)
-
-    // attempt to attach myself
-    if(this.method) {
+    if (this.method.length) {
       var data = this.handler
 
       data.unshift({
@@ -105,19 +90,19 @@ Route.prototype.attach = function (server) {
         name: this.name,
       })
 
-      server.log.info('registering %s at uri %s', this.method.toUpperCase(), this.path)
-
+      server.log.info('Attaching [%s]%s', this.method.toUpperCase(), this.path)
       server[ this.method ].apply(server, data)
     }
-
-    // attach sub routes
-    this.routes.forEach(function (route) {
-      route.setPrefix(me.path).attach(server)
-    })
   } catch (e) {
     this.attached = false
-    throw Error('Unable to add route ' + JSON.stringify(this), e)
+    throw Error('Unable to add route ' + JSON.stringify(this))
   }
+
+  // attach children
+  this.routes.forEach(function (route) {
+    route.path = Route.mergePaths(this.path, route.path)
+    route.attach(server)
+  }, this)
 }
 
 module.exports = Route

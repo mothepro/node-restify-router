@@ -44,15 +44,20 @@ describe('Restify Router', function () {
 
     it('Should add simple GET route with prefix to server', function (done) {
 
-      var r = new Route({
+      var child = new Route({
         path: '/world/',
         method: 'get',
         handler: function (req, res, next) {
           res.send('Hello World')
           next()
         }
-      }).setPrefix('/hello/')
-        .attach(server)
+      })
+
+      var parent = new Route({
+        path: '/hello/',
+      }).addRoute(child)
+
+      parent.attach(server)
 
       request(server)
         .get('/hello/world')
@@ -261,13 +266,13 @@ describe('Restify Router', function () {
       })).attach(server)
 
       request(server)
-          .get('/hello/world')
-          .expect(200)
-          .end(function (err, res) {
-            if (err) throw err
-            res.body.should.equal('Hello World')
-            done()
-          })
+        .get('/hello/world')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) throw err
+          res.body.should.equal('Hello World')
+          done()
+        })
     })
 
     it('Should add versioned routes', function (done) {
