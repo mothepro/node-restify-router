@@ -16,7 +16,7 @@
     "group",
     "restify"
   ],
-  "author":  {
+  "author": {
     "name": "Maurice Prosper",
     "email": "mothepro@live.com",
     "url": "https://mauriceprosper.com"
@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/mothepro/node-restify-router/issues"
   },
-  "homepage": "https://github.com/mothepro/node-restify-router#readme"
+  "homepage": "https://github.com/mothepro/node-restify-router#readme",
+  "dependencies": {
+    "restify": "^4.1.1"
+  }
 }
