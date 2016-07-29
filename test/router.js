@@ -275,21 +275,30 @@ describe('Restify Router', function () {
     })
 
     it('Should add external routes', function (done) {
-      const data = require('./api')
-      const api = Route.addRoutes(data)
+      const api = require('./api')
 
-      expect(data).to.be.an.instanceOf(Route)
+      const parent = Route.addRoutes(api)
+
+      expect(parent).to.be.an.instanceOf(Route)
       expect(api).to.be.an.instanceOf(Route)
       done()
     })
 
-    it('Should run multiple handlers', function (done) {
+    it('Should run multiple & nested handlers', function (done) {
       const api = require('./api')
 
       api.attach(server)
-
       request(server)
         .get('/api/myname/myplace')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) done(err)
+
+          expect(res.text).to.equal('mynamemyplace')
+        })
+
+      request(server)
+        .get('/api/other/myname/myplace')
         .expect(200)
         .end(function (err, res) {
           if (err) done(err)
