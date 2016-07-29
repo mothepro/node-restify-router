@@ -32,6 +32,101 @@ function Route (config) {
 }
 
 /**
+ * Set a path
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.setPath = function (path) {
+  if (typeof path === 'string')
+    this.path = path.trim()
+  else if (path instanceof RegExp)
+    this.path = path
+  else
+    throw new Error('Path must be a string or regular expression')
+
+  return this
+}
+
+/**
+ * Add a name to the route
+ * @param name
+ * @returns {Route}
+ */
+Route.prototype.setName = function (name) {
+  this.name = name
+  return this
+}
+
+/**
+ * Sets the version which work with this route
+ * @param version
+ * @returns {Route}
+ */
+Route.prototype.setVersion = function (version) {
+  this.version = version
+  return this
+}
+
+/**
+ * Addes a new handler to the Route callback stack
+ * @param handler
+ * @returns {Route}
+ */
+Route.prototype.addHandler = function (handler) {
+  this.handler.push(handler)
+  return this
+}
+
+var methodShortcut = function (method) {
+  return function (path) {
+    this.method = method
+    return this.setPath(path)
+  }
+}
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.get = methodShortcut('get')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.post = methodShortcut('post')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.put = methodShortcut('put')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.del = Route.prototype.delete = methodShortcut('del')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.patch = methodShortcut('patch')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.head = methodShortcut('head')
+
+/**
+ * @param path
+ * @returns {Route}
+ */
+Route.prototype.opts = Route.prototype.options = methodShortcut('opts')
+
+/**
  * Add a route or another group to the group
  * @param data route or group
  */
@@ -46,6 +141,7 @@ Route.prototype.addRoute = function (data) {
 /**
  * Adds an array of routes to the group
  * @param data route or list of them
+ * @TODO unsolve newly added routes
  */
 Route.prototype.addRoutes = function (data) {
   if (Array.isArray(data))

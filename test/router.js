@@ -157,14 +157,13 @@ describe('Restify Router', function () {
     })
 
     it('Should add simple PATCH route to server', function (done) {
-      new Route({
-        path: '/patchme',
-        method: 'patch',
-        handler: function (req, res, next) {
+      new Route()
+        .patch('/patchme')
+        .addHandler(function (req, res, next) {
           res.send(req.body.name)
           next()
-        }
-      }).attach(server)
+        })
+        .attach(server)
 
       request(server)
           .patch('/patchme')
