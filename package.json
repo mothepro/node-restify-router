@@ -1,5 +1,5 @@
 {
-  "name": "restify-routes",
+  "name": "restify-better-router",
   "version": "1.0.0",
   "description": "A clean way to organize routes for the restify router",
   "main": "index.js",
