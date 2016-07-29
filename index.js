@@ -20,10 +20,10 @@ function Route (config) {
 
   this.method = this.method.toLowerCase()
 
-  if (typeof this.path !== 'string' && !(this.path instanceof RegExp))
+  if (typeof this.path === 'string')
+    this.path = this.path.trim()
+  else if (!(this.path instanceof RegExp))
     throw new Error('Path must be a string or regular expression')
-
-  this.path = this.path.trim()
 
   // for later
   this.attached = false
@@ -72,17 +72,30 @@ Route.addRoutes = function (data) {
  * Merge paths
  * @param prefix
  * @param current
- * @returns {string}
+ * @returns {string|Regex}
  */
 Route.mergePaths = function (prefix, current) {
-  // remove trailing slash
-  prefix = prefix.trim().replace(/\/+$/g, '')
+  if (prefix instanceof RegExp || current instanceof RegExp) {
+    if (typeof prefix === 'string')
+      prefix = new RegExp(prefix)
 
-  // remove starting slash
-  current = current.trim().replace(/^\/+/g, '')
+    if (typeof current === 'string')
+      current = new RegExp(current)
 
-  // merge
-  return prefix + '/' + current
+    return new RegExp(Route.mergePaths(
+      prefix.source.replace(/\$?$/, '').replace(/\\\/*/g, '/'),
+      current.source.replace(/^\^?/, '').replace(/\\\/*/g, '/')
+    ))
+  } else {
+    // remove trailing slash
+    prefix = prefix.trim().replace(/\/+$/g, '')
+
+    // remove starting slash
+    current = current.trim().replace(/^\/+/g, '')
+
+    // merge
+    return prefix + '/' + current
+  }
 }
 
 /**

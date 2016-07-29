@@ -69,6 +69,27 @@ describe('Restify Router', function () {
         })
     })
 
+    it('Should add simple regex GET route to server', function (done) {
+      new Route({
+        path:    /^\/([a-zA-Z0-9_\.~-]+)\/(.*)/,
+        method: 'get',
+        handler: function (req, res, next) {
+          res.send(req.params[0] + '-' + req.params[1])
+          next()
+        }
+      }).attach(server)
+
+      request(server)
+        .get('/hello/test')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) done(err)
+
+          res.body.should.equal('hello-test')
+          done()
+        })
+    })
+
     it('Should add simple POST route to server', function (done) {
       new Route({
         path: '/postme',
@@ -282,6 +303,29 @@ describe('Restify Router', function () {
       expect(parent).to.be.an.instanceOf(Route)
       expect(api).to.be.an.instanceOf(Route)
       done()
+    })
+
+    it('Should add nested regex routes to server', function (done) {
+      new Route({
+        path: /^\/lets\/([a-z]+)\/$/
+      }).addRoute(new Route({
+        path:    /^\/this\/([a-z]+)$/,
+        method: 'get',
+        handler: function (req, res, next) {
+          res.send(req.params[0] + '-' + req.params[1])
+          next()
+        }
+      })).attach(server)
+
+      request(server)
+        .get('/lets/test/this/out')
+        .expect(200)
+        .end(function (err, res) {
+          if (err) done(err)
+
+          res.body.should.equal('test-out')
+          done()
+        })
     })
 
     it('Should run multiple & nested handlers', function (done) {
