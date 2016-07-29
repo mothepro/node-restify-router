@@ -27,6 +27,7 @@ function Route (config) {
 
   // for later
   this.attached = false
+  this.solved = false
   this.routes = []
 }
 
@@ -72,7 +73,7 @@ Route.addRoutes = function (data) {
  * Merge paths
  * @param prefix
  * @param current
- * @returns {string|Regex}
+ * @returns {string|RegExp}
  */
 Route.mergePaths = function (prefix, current) {
   if (prefix instanceof RegExp || current instanceof RegExp) {
@@ -128,10 +129,20 @@ Route.prototype.attach = function (server) {
 
   // attach children, merge routes & handlers
   this.routes.forEach(function (route) {
-    route.path = Route.mergePaths(this.path, route.path)
-    this.handler.slice().reverse().forEach(function (x) { route.handler.unshift(x) })
+    // Fix child route if it hasn't been already
+    if (!route.solved) {
+      route.path = Route.mergePaths(this.path, route.path)
+      this.handler.slice().reverse().forEach(function (x) {
+        route.handler.unshift(x)
+      })
+      route.solved = true
+    }
+
     route.attach(server)
   }, this)
+
+  // allow to be attached to another server
+  this.attached = false
 }
 
 module.exports = Route

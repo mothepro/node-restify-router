@@ -328,21 +328,29 @@ describe('Restify Router', function () {
         })
     })
 
-    it('Should run multiple & nested handlers', function (done) {
+    it('Should run multiple handlers', function (done) {
       const api = require('./api')
 
       api.attach(server)
+
       request(server)
-        .get('/api/myname/myplace')
+        .get('/api/other/myname/myplace')
         .expect(200)
         .end(function (err, res) {
           if (err) done(err)
 
           expect(res.text).to.equal('mynamemyplace')
+          done()
         })
+    })
+
+    it('Should run nested handlers', function (done) {
+      const api = require('./api')
+
+      api.attach(server)
 
       request(server)
-        .get('/api/other/myname/myplace')
+        .get('/api/myname/myplace')
         .expect(200)
         .end(function (err, res) {
           if (err) done(err)
