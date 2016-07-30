@@ -7,7 +7,7 @@
 
 
 ## Installation
-```
+```bash
 $ npm i -S restify-better-router
 ```
 Command not working? Follow [this tutorial](https://www.npmjs.com/package/restify-better-router/tutorial).
@@ -17,7 +17,7 @@ This package allows you to define your routes using a Route object, making it ve
 
 ## Example
 File `user.js`
-```
+```javascript
 const Route = require('restify-better-router')
 
 module.exports.name = new Route()
@@ -29,7 +29,7 @@ module.exports.name = new Route()
 ```
 
 File `place.js`
-```
+```javascript
 const Route = require('restify-better-router')
 
 module.exports.name = new Route()
@@ -41,7 +41,7 @@ module.exports.name = new Route()
 ```
 
 File `api.js`
-```
+```javascript
 const restify = require('restify');
 const Route = require('restify-better-router')
 
@@ -63,7 +63,7 @@ server.listen(8080, function() {
 
 ## Creating a route
 A router object is an isolated instance of routes. The router interface matches the interface for adding routes to a restify server:
-```
+```javascript
 var Router = require('restify-router').Router;
 var routerInstance = new  Router();
 var restify = require('restify');
@@ -87,13 +87,13 @@ server.listen(8080, function() {
 
 ## Usage
 Upon creating a new route an object can be given as a shortcut to the chainable methods
-```
+```javascript
 new Route({
-    name:       Given route name
-    version:    Version require for route
-    path:       Path for a route
-    method:     GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS
-    handler:    A handler function, or Array of handler functions
+    name:       {string} Given route name
+    version:    {string|string[]} Version require for route
+    path:       {string} Path for a route
+    method:     {string} GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS
+    handler:    {Function|Function[]} A handler function, or Array of handler functions
 })
 ```
 
@@ -119,9 +119,8 @@ One can modify the route's other attributes using...
 + `r.attach(server)` Attachés this route and its children to `server`
 
 ## Attaching routes to a server
-Once you have made and grouped your routes however you like
-you can attach them to the restify server to become live.
-```
+Once you have made and grouped your routes, you can attach them to the restify server to become live.
+```javascript
 const Route = require('restify-better-router')
 const restify = require('restify')
 
@@ -141,8 +140,8 @@ r.attach(server)
 
 // start server
 server.listen(8080, function() {
-  console.log('%s listening at %s', server.name, server.url);
-});
+  console.log('%s listening at %s', server.name, server.url)
+})
 ```
 
 ---
