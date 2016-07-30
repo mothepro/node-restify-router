@@ -19,6 +19,8 @@ function Route (config) {
     throw new Error('Method must be a string')
 
   this.method = this.method.toLowerCase()
+  if (this.method === 'delete') this.method = 'del'
+  if (this.method === 'options') this.method = 'opts'
 
   if (typeof this.path === 'string')
     this.path = this.path.trim()

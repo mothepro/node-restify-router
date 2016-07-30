@@ -98,18 +98,19 @@ new Route({
 ```
 
 If you prefer, fluent methods can be used instead of the object.
+Assuming we create a route object like this `var r = new Route()`.
 
-Assuming we create a route object like this `var r = new Route()`. We can...
-
+One can set path and method using...
++ `r.setPath(path)` Sets the path for route as `path`
 + `r.get(path)` Sets GET method, with a specified `path`
 + `r.post(path)` Sets POST method, with a specified `path`
 + `r.put(path)` Sets PUT method, with a specified `path`
 + `r.patch(path)` Sets PATCH method, with a specified `path`
-+ `r.del(path)` or `r.delete(path)` Sets DELETE method, with a specified `path`
 + `r.head(path)` Sets HEAD method, with a specified `path`
++ `r.del(path)` or `r.delete(path)` Sets DELETE method, with a specified `path`
 + `r.opts(path)` or `r.options(path)` Sets OPTIONS method, with a specified `path`
 
-
+One can modify the route's other attributes using...
 + `r.setName(name)` Given route the name `name`
 + `r.setVersion(verion)` Sets a route's version to `version` (can be an array of versions)
 + `r.addHandler(handler)` Adds `handler` as the route's function to the route
