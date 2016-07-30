@@ -27,12 +27,6 @@ var getName = new Route({
   handler: nameHandler
 })
 
-var getPlace = new Route({
-  path: ':place',
-  method: 'get',
-  handler: placeHandler
-})
-
 var getOther = new Route({
   path: '/other/:name/:place/',
   method: 'get',
@@ -40,6 +34,10 @@ var getOther = new Route({
 })
 
 api.addRoutes([getName, getOther])
+
+var getPlace = require('./placer')
+getPlace.addHandler(placeHandler)
+
 getName.addRoute(getPlace)
 
 module.exports = api
