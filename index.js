@@ -129,6 +129,7 @@ Route.prototype.opts = Route.prototype.options = methodShortcut('opts')
 /**
  * Add a route or another group to the group
  * @param data route or group
+ * @returns {Route}
  */
 Route.prototype.addRoute = function (data) {
   if (!(data instanceof Route))
@@ -139,9 +140,11 @@ Route.prototype.addRoute = function (data) {
 }
 
 /**
+ * @TODO unsolve newly added routes
+ *
  * Adds an array of routes to the group
  * @param data route or list of them
- * @TODO unsolve newly added routes
+ * @returns {Route}
  */
 Route.prototype.addRoutes = function (data) {
   if (Array.isArray(data))
@@ -198,6 +201,7 @@ Route.mergePaths = function (prefix, current) {
 /**
  * Adds a route to the server
  * @param server to add route to
+ * @returns {Route}
  */
 Route.prototype.attach = function (server) {
   // cycle prevention
@@ -239,6 +243,7 @@ Route.prototype.attach = function (server) {
 
   // allow to be attached to another server
   this.attached = false
+  return this
 }
 
 module.exports = Route
