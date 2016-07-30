@@ -26,10 +26,10 @@
     "url": "https://github.com/mothepro/node-restify-router/issues"
   },
   "homepage": "https://github.com/mothepro/node-restify-router#readme",
-  "dependencies": {},
   "devDependencies": {
     "chai": "^3.5.0",
     "mocha": "^2.5.3",
+    "restify": "^4.1.1",
     "supertest": "^1.2.0"
   }
 }
